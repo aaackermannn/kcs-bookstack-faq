@@ -1,0 +1,30 @@
+name: KCS Issue to BookStack
+on:
+  issues:
+    types: [opened, edited, closed, reopened]
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: bookstack-issue-${{ github.event.issue.number }}
+  cancel-in-progress: false
+jobs:
+  sync:
+    if: startsWith(github.event.issue.title, '[KCS]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Create or update FAQ article
+        run: npm run sync
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOOKSTACK_URL: ${{ secrets.BOOKSTACK_URL }}
+          BOOKSTACK_API_ID: ${{ secrets.BOOKSTACK_API_ID }}
+          BOOKSTACK_API_SECRET: ${{ secrets.BOOKSTACK_API_SECRET }}
+          BOOKSTACK_BOOK_ID: ${{ secrets.BOOKSTACK_BOOK_ID }}

@@ -1,0 +1,14 @@
+{
+  "name": "kcs-bookstack-faq",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-issue.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "marked": "16.4.1",
+    "sanitize-html": "2.17.0"
+  }
+}

@@ -1,0 +1,42 @@
+name: pr7-kcs
+services:
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: bookstack
+      MARIADB_USER: bookstack
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in .env}
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Moscow
+      APP_URL: ${APP_URL:-http://localhost:6875}
+      APP_KEY: ${APP_KEY:?Set APP_KEY in .env}
+      APP_LANG: ru
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: bookstack
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: bookstack
+    ports:
+      - 127.0.0.1:6875:80
+    volumes:
+      - bookstack:/config
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  database:
+  bookstack:
