@@ -18,6 +18,8 @@ Workflow расположен в `.github/workflows/bookstack-kcs.yml`, шабл
 
 В учебном запуске использован локальный Windows runner с меткой `pr7-kcs`: GitHub отклонил задание на `ubuntu-latest` из-за ограничения биллинга учётной записи. Для облачного runner после устранения ограничения заменить `runs-on` на `ubuntu-latest`. Self-hosted runner следует держать только на доверенном учебном репозитории и выключать после демонстрации.
 
+Повторный запуск в исходной рабочей папке: `powershell -File scripts/Start-Stand.ps1`. Скрипт запускает Docker, сохраняет новый URL туннеля в локальный `.env` и GitHub Secret, затем запускает уже зарегистрированный runner. Реквизиты GitHub берутся из Git Credential Manager и не печатаются. Для другой папки можно задать `-CloudflaredPath` и `-RunnerDirectory`. Для первой установки всё равно нужно создать `.env`, пользователя API, Secrets и зарегистрировать runner по шагам выше.
+
 ## Проверка скрипта
 
 Требуется Node.js 22 или новее.
